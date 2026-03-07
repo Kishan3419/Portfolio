@@ -6,9 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production && \
-    npm ci --save-dev postcss postcss-cli autoprefixer cssnano tailwindcss
+# Install all dependencies (including dev dependencies for building)
+RUN npm install
 
 # Copy project files
 COPY . .
