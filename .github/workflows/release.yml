@@ -1,22 +1,32 @@
-name: Create GitHub Release
+name: Deploy Portfolio to VPS
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 jobs:
-  release:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          echo "Starting deployment..."
+
+          cd /home/ubuntu/kishankumarportfolio/Portfolio
+
+          echo "Pulling latest code"
+          git pull origin main
+
+          echo "Rebuilding and restarting Docker container"
+          docker compose up -d --build
+
+          echo "Deployment completed successfully"
