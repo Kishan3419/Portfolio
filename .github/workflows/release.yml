@@ -18,15 +18,15 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-        script: |
-          echo "Starting deployment..."
+          script: |
+            echo "Starting deployment..."
 
-          cd /home/ubuntu/kishankumarportfolio/Portfolio
+            cd /home/ubuntu/kishankumarportfolio/Portfolio
 
-          echo "Pulling latest code"
-          git pull origin main
+            echo "Pulling latest code"
+            git pull origin main
 
-          echo "Rebuilding and restarting Docker container"
-          docker compose up -d --build
+            echo "Rebuilding and restarting Docker container"
+            docker compose up -d --build
 
-          echo "Deployment completed successfully"
+            echo "Deployment completed successfully"
