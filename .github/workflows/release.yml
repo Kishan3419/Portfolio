@@ -23,15 +23,29 @@ jobs:
           script: |
             echo "Starting deployment..."
 
-            cd /home/ubuntu/kishankumarportfolio/Portfolio
+            APP_DIR="/home/ubuntu/kishankumarportfolio/Portfolio"
+
+            # Clone repo if not present
+            if [ ! -d "$APP_DIR" ]; then
+              echo "Cloning repository..."
+              git clone https://github.com/Kishan3419/Portfolio.git $APP_DIR
+            fi
+
+            cd $APP_DIR
 
             echo "Pulling latest code"
             git pull origin main
 
-            echo "Stopping old container"
+            echo "Stopping old container if running"
+            docker rm -f portfolio-app || true
+
+            echo "Stopping compose stack"
             docker compose down || true
 
-            echo "Rebuilding and restarting container"
+            echo "Cleaning unused Docker resources"
+            docker system prune -f
+
+            echo "Building and starting new container"
             docker compose up -d --build
 
             echo "Deployment completed successfully"
